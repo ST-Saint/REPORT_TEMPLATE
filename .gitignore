@@ -2,5 +2,6 @@
 *.aux
 *.out
 *.toc
+*.gz
 _minted*/
 auto/
