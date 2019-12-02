@@ -1,1 +1,25 @@
-\section{Section_1}
+\section{实验内容}
+\subsection{实验内容}
+编写语法分析程序，实现对算数表达式的语法分析。要求所分析算数表达式由如下文法产生。
+
+\begin{center}
+  \begin{equation*}
+    \begin{array}{lcccc}
+      E \rightarrow& E \ + \ T\ &|& E \ - \ T &|\ T \\
+      T \rightarrow& T \ * \ F\ &|& T \ / \ F &|\ F \\
+      F \rightarrow& (E)        &|& num &
+    \end{array}
+  \end{equation*}
+\end{center}
+
+\subsection{实验要求}
+在对输入的算数表达式进行分析的过程中，一次输出所采用的产生式。
+利用YACC自动生成语法分析程序，调用LEX自动生成的词法分析程序。
+
+\section{实验环境}
+\subsection{操作系统}
+Ubuntu 18.04 LTS
+\subsection{编译环境}
+g++ (Ubuntu 7.4.0-1ubuntu1~18.04.1) 7.4.0
+flex 2.6.4
+bison (GNU Bison) 3.0.4

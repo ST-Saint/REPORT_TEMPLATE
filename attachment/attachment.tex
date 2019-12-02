@@ -1,3 +1,101 @@
 % \newpage
 % \thispagestyle{empty}
-%     \includegraphics[width=15cm]{attachment/attachment.pdf}
+% \includegraphics[width=15cm]{attachment/attachment.pdf}
+\section{附件}
+\subsection{lex.l}
+\begin{minted}[bgcolor=bg, linenos, breaklines]{c++}
+%{
+#include <bits/stdc++.h>
+#include "y.tab.hh"
+extern "C"{
+int yywrap(void);
+int yylex(void);
+}
+using namespace std;
+%}
+
+digit                           [0-9]
+exponent                        ([Ee][+-]?{digit}+)
+
+%%
+
+[-/+*()]                        { yylval.char_value = yytext[0];     return yytext[0]; }
+0|([1-9]{digit}*?)              { yylval.double_value = atoi(yytext); return CONSTANT; }
+{digit}+{exponent}?             { yylval.double_value = atof(yytext); return CONSTANT; }
+{digit}*"."{digit}+{exponent}?  { yylval.double_value = atof(yytext); return CONSTANT; }
+{digit}+"."{digit}*{exponent}?? { yylval.double_value = atof(yytext); return CONSTANT; }
+
+%%
+
+int yywrap(void) {
+  return 1;
+}
+
+\end{minted}
+\subsection{lex.y}
+\begin{minted}[bgcolor=bg, linenos, breaklines]{c++}
+%{
+  #include <bits/stdc++.h>
+  #define YYDEBUG 1
+  #define eps 1e-5
+  extern "C" {
+    void yyerror(const char *){};
+    extern int yylex(void);
+    extern char *yytext;
+    extern int yydebug;
+  }
+
+  using namespace std;
+%}
+
+%union {
+  char char_value;
+  double double_value;
+}
+
+%start E
+
+%token <double_value> CONSTANT
+%type <double_value> E T F
+
+%left <char_value> '+' '-' '*' '/'
+%token <char_value> '(' ')'
+
+%printer {
+  int r = round($$);
+  if( abs(r-$$)<=eps ){
+    fprintf (yyo, "%d", r);
+  }
+  else{
+    fprintf (yyo, "%lf", $$);
+  }
+ } <double_value>
+
+%printer {
+   fprintf (yyo, "'%c'", $$);
+} <char_value>
+
+%%
+
+E : E '+' T { $$ = $1 + $3 ;}
+  | E '-' T { $$ = $1 - $3 ;}
+  | T       { $$ = $1      ;}
+  ;
+
+T : T '*' F {$$ = $1 * $3  ;}
+  | T '/' F { $$ = $1 / $3 ;}
+  | F       { $$ = $1      ;}
+  ;
+
+F : '(' E ')' { $$ = $2    ;}
+  | CONSTANT  { $$ = $1    ;}
+  ;
+
+%%
+
+int main() {
+  yydebug = 1;
+  return yyparse();
+}
+
+\end{minted}
