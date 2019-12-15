@@ -2,6 +2,7 @@
 *.aux
 *.out
 *.toc
+*.pdf
 *.gz
 _minted*/
 auto/
